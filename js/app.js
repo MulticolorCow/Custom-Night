@@ -25,6 +25,7 @@ const dom = {
     viewCreate: document.getElementById('view-create'),
     viewGaleria: document.getElementById('view-galeria'),
     galleryContainer: document.getElementById('gallery-container'),
+    gallerySearch: document.getElementById('gallery-search'),
     navLinks: document.querySelectorAll('.nav-link'),
 };
 
@@ -201,12 +202,14 @@ const crearTarjetaHTML = (card) => {
     return article;
 };
 
-const renderGallery = () => {
-    const cards = getSavedCards();
+const renderGallery = (filtro = '') => {
+    const cards = getSavedCards().filter(card =>
+        card.name.toLowerCase().includes(filtro.toLowerCase())
+    );
     dom.galleryContainer.innerHTML = '';
 
     if (cards.length === 0) {
-        dom.galleryContainer.innerHTML = '<p>Todavía no has guardado ninguna tarjeta.</p>';
+        dom.galleryContainer.innerHTML = '<p>No se encontraron tarjetas.</p>';
         return;
     }
 
@@ -214,6 +217,10 @@ const renderGallery = () => {
         dom.galleryContainer.appendChild(crearTarjetaHTML(card));
     });
 };
+
+dom.gallerySearch.addEventListener('input', (e) => {
+    renderGallery(e.target.value);
+});
 
 // ---------- Router ----------
 

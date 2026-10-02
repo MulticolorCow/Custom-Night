@@ -2,10 +2,11 @@ const STORAGE_KEY = 'customNightCards';
 
 const state = {
     cardData: {
-        name: '',
-        bio: '',
-        avatarUrl: 'src/assets/Avatares0.png', // Avatar por defecto
-        color: '#8c3bf6'
+        name: '', 
+        bio: '', 
+        avatarUrl: 'src/assets/Avatares0.png', 
+        color: '#8c3bf6', 
+        quote: '' 
     }
 };
 
@@ -20,6 +21,7 @@ const dom = {
     avatarSelector: document.getElementById('avatar-selector'),
     previewName: document.getElementById('name-preview'),
     previewBio: document.getElementById('bio-preview'),
+    previewQuote: document.getElementById('quote-preview'),
     previewAvatar: document.getElementById('avatar-preview'),
     previewHeader: document.getElementById('preview-header'),
     viewCreate: document.getElementById('view-create'),
@@ -72,6 +74,7 @@ const initAvatarSelector = () => {
 const renderCard = () => {
     dom.previewName.textContent = state.cardData.name || 'Nombre Apellido';
     dom.previewBio.textContent = state.cardData.bio || 'La biografía aparecerá aquí...';
+    dom.previewQuote.textContent = state.cardData.quote || 'Obteniendo una quote...';
     dom.previewAvatar.src = state.cardData.avatarUrl;
     dom.previewHeader.style.backgroundColor = state.cardData.color;
     dom.inputName.value = state.cardData.name;
@@ -92,9 +95,12 @@ const resetForm = () => {
         name: '',
         bio: '',
         avatarUrl: 'src/assets/Avatares0.png',
-        color: '#8c3bf6'
+        color: '#8c3bf6',
+        quote: ''
     };
+
     renderCard();
+    fetchKanyeQuote();
 };
 
 /**
@@ -115,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     renderCard();
+    fetchKanyeQuote();
     router();
 });
 
@@ -178,6 +185,22 @@ const fetchGitHubData = async (username) => {
         setTimeout(() => dom.apiStatus.textContent = '', 3000);
     }
 };
+const fetchKanyeQuote = async () => { 
+    try { 
+        const response = await fetch('https://api.kanye.rest/');
+        if (!response.ok) { 
+            throw new Error('No se pudo obtener la quote'); 
+        } 
+        const data = await response.json(); 
+        state.cardData.quote = data.quote; 
+        renderCard(); 
+    } 
+    catch (error) { 
+        console.error('Error con Kanye REST:', error); 
+        state.cardData.quote = 'No se pudo obtener una quote de Ye.'; 
+        renderCard(); 
+    } 
+};
 
 // ---------- Vista Galería ----------
 
@@ -191,7 +214,13 @@ const crearTarjetaHTML = (card) => {
         <div class="card-body">
             <h3>${card.name}</h3>
             <p>${card.bio || 'Sin biografía.'}</p>
-            <button class="btn-delete" data-id="${card.id}">Eliminar</button>
+            <div class="ye-quote">
+                <span class="quote-label">YE SAYS:</span>
+                <p>${card.quote || 'Sin quote.'}</p>
+            </div>
+            <button class="btn-delete" data-id="${card.id}">
+                Eliminar
+            </button>
         </div>
     `;
 

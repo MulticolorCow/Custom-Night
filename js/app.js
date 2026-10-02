@@ -185,22 +185,39 @@ const fetchGitHubData = async (username) => {
         setTimeout(() => dom.apiStatus.textContent = '', 3000);
     }
 };
-const fetchKanyeQuote = async () => { 
-    try { 
-        const response = await fetch('https://api.kanye.rest/');
-        if (!response.ok) { 
-            throw new Error('No se pudo obtener la quote'); 
-        } 
-        const data = await response.json(); 
-        state.cardData.quote = data.quote; 
-        renderCard(); 
-    } 
-    catch (error) { 
-        console.error('Error con Kanye REST:', error); 
-        state.cardData.quote = 'No se pudo obtener una quote de Ye.'; 
-        renderCard(); 
-    } 
+const fetchKanyeQuote = async () => {
+    try {
+        console.log("Consultando Kanye REST...");
+
+        const response = await fetch("https://api.kanye.rest/");
+
+        console.log("Status:", response.status);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log("Respuesta de Kanye REST:", data);
+
+        if (!data.quote) {
+            throw new Error("La API no devolvió una quote");
+        }
+
+        state.cardData.quote = data.quote;
+
+        renderCard();
+
+    } catch (error) {
+        console.error("Error con Kanye REST:", error);
+
+        state.cardData.quote = "No se pudo obtener la quote.";
+
+        renderCard();
+    }
 };
+
 
 // ---------- Vista Galería ----------
 

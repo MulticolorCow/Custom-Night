@@ -1,3 +1,4 @@
+console.log("🔥 APP.JS SE ESTÁ CARGANDO");
 const STORAGE_KEY = 'customNightCards';
 
 const state = {
